@@ -1,13 +1,37 @@
-all: build
+AS := nasm
+CC := i686-elf-gcc
+LD := i686-elf-ld
+OBJCOPY := i686-elf-objcopy
 
-.PHONY: build 
+ASFLAGS := -f elf32
+CFLAGS := -ffreestanding -fno-pic -m32 -Wall -Wextra -O2 -nostdlib -lgcc
+LDFLAGS := -m elf_i386 -T linker.ld
 
-build:
-	nasm -f elf64 sysroot/boot/boot.asm -o build/boot.o
-	clang --target=x86_64-elf -ffreestanding -fno-pic -mno-red-zone -O2 -c sysroot/kernel/kernel.c -o build/kernel.o
-	clang --target=x86_64-elf -ffreestanding -fno-pic -mno-red-zone -O2 build/boot.o build/kernel.o -T linker.ld -nostdlib -o build/kernel.elf -fuse-ld=lld
-	cp build/kernel.elf iso/boot/
-	grub-mkrescue -o nullos.iso iso/
+INCLUDEDIR := include
+BUILDDIR := build
 
-test: build
-	qemu-system-x86_64 ./nullos.iso
+.PHONY: all clean
+
+all: nullos.iso test
+
+$(BUILDDIR):
+	mkdir -p $(BUILDDIR)
+
+$(BUILDDIR)/i686-boot-boot.o: arch/i686/boot/boot.asm | $(BUILDDIR)
+	$(AS) $(ASFLAGS) $< -o $@
+
+$(BUILDDIR)/kernel-main.o: kernel/main.c | $(BUILDDIR)
+	$(CC) $(CFLAGS) -I$(INCLUDEDIR) -c $< -o $@
+
+$(BUILDDIR)/kernel.elf: $(BUILDDIR)/i686-boot-boot.o $(BUILDDIR)/kernel-main.o
+	$(LD) $(LDFLAGS) $^ -o $@
+
+nullos.iso: $(BUILDDIR)/kernel.elf
+	cp $(BUILDDIR)/kernel.elf iso/boot/
+	grub2-mkrescue -o $@ iso
+
+clean:
+	rm -rf $(BUILDDIR)
+
+test:
+	qemu-system-i386 -cdrom nullos.iso
