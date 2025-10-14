@@ -1,4 +1,5 @@
 -I./include
+-I./libc/include
 -ffreestanding
 -fno-pic
 -m32
