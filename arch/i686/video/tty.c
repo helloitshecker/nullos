@@ -34,12 +34,31 @@ void tty_putchar(char ch) {
     x++;
 }
 
+
+void tty_putcharat(size _x, size _y, char ch) {
+    if (_x+1 >= VGA_WIDTH) {
+        _x = 0;
+    }
+
+    ptr[(_y * VGA_WIDTH + _x) * 2] = ch;
+    ptr[(_y * VGA_WIDTH + _x) * 2 + 1] = clearcolor;
+}
+
+void tty_scroll() {
+    for (size i = 0; i < VGA_HEIGHT-1; i++) {
+        for (size j = 0; j < VGA_WIDTH; j++) {
+            const char downchar = (char)ptr[2*((i+1)*VGA_WIDTH + j)];
+            ptr[2*(i*VGA_WIDTH + j)] = downchar;
+        }
+    }
+}
+
 void tty_write(const char* fmt, uint32_t length) {
     for (size i = 0; i < length; i++) {
         if (fmt[i] == '\n') {
             if (y+1 >= VGA_HEIGHT) {
-                y = 0;
                 x = 0;
+                tty_scroll();
             } else {
                 y++;
                 x = 0;
