@@ -20,10 +20,13 @@ $(BUILDDIR):
 $(BUILDDIR)/i686-boot-boot.o: arch/i686/boot/boot.asm | $(BUILDDIR)
 	$(AS) $(ASFLAGS) $< -o $@
 
+$(BUILDDIR)/video-tty.o: arch/i686/video/tty.c | $(BUILDDIR)
+	$(CC) $(CFLAGS) -I$(INCLUDEDIR) -c $< -o $@
+
 $(BUILDDIR)/kernel-main.o: kernel/main.c | $(BUILDDIR)
 	$(CC) $(CFLAGS) -I$(INCLUDEDIR) -c $< -o $@
 
-$(BUILDDIR)/kernel.elf: $(BUILDDIR)/i686-boot-boot.o $(BUILDDIR)/kernel-main.o
+$(BUILDDIR)/kernel.elf: $(BUILDDIR)/i686-boot-boot.o $(BUILDDIR)/kernel-main.o $(BUILDDIR)/video-tty.o
 	$(LD) $(LDFLAGS) $^ -o $@
 
 nullos.iso: $(BUILDDIR)/kernel.elf

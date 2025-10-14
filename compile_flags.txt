@@ -1,0 +1,9 @@
+-I./include
+-ffreestanding
+-fno-pic
+-m32
+-Wall
+-Wextra
+-nostdlib
+-target
+i686-elf

@@ -1,5 +1,7 @@
 #include <stdint.h>
 
+#include <video/tty.h>
+
 // Simple kernel main function
 void kernel_main(uint32_t magic, uint32_t addr) {
     // Verify we were booted by a Multiboot2-compliant bootloader
@@ -10,8 +12,13 @@ void kernel_main(uint32_t magic, uint32_t addr) {
         }
     }
 
-    // Kernel successfully booted!
-    // You can add your VGA driver calls here later
+    tty_init();
+    tty_putchar('H');
+    tty_putchar('e');
+    tty_putchar('l');
+    tty_putchar('l');
+    tty_putchar('o');
+    tty_putchar('!');
 
     // Hang forever
     while(1) {
