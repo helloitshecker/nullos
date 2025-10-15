@@ -7,7 +7,16 @@ multiboot_header_start:
     dd multiboot_header_end - multiboot_header_start  ; header length
     dd -(0xE85250D6 + 0 + (multiboot_header_end - multiboot_header_start)) ; checksum
 
+    align 8
+    dw 5    ; type = framebuffer
+    dw 0    ; flags
+    dd 20   ; size
+    dd 1024 ; w
+    dd 768  ; h
+    dd 32   ; color depth
+
     ; End tag
+    align 8
     dw 0    ; type
     dw 0    ; flags
     dd 8    ; size

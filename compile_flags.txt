@@ -8,3 +8,4 @@
 -nostdlib
 -target
 i686-elf
+-std=c23

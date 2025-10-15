@@ -4,7 +4,7 @@ LD := i686-elf-ld
 OBJCOPY := i686-elf-objcopy
 
 ASFLAGS := -f elf32
-CFLAGS := -ffreestanding -fno-pic -m32 -Wall -Wextra -O2 -nostdlib -lgcc
+CFLAGS := -ffreestanding -fno-pic -m32 -Wall -Wextra -O2 -nostdlib -lgcc -std=c23
 LDFLAGS := -m elf_i386 -T linker.ld
 
 INCLUDEDIR := include
@@ -15,7 +15,8 @@ DEPDIR := $(BUILDDIR)/.deps
 # Automatically find all source files
 C_SOURCES := $(wildcard kernel/*.c) \
              $(wildcard arch/i686/video/*.c) \
-             $(wildcard libc/src/*.c)
+             $(wildcard libc/src/*.c) \
+             $(wildcard arch/i686/*.c)
 
 ASM_SOURCES := $(wildcard arch/i686/boot/*.asm)
 
@@ -43,6 +44,9 @@ $(BUILDDIR)/%.o: kernel/%.c | $(BUILDDIR) $(DEPDIR)
 $(BUILDDIR)/%.o: arch/i686/video/%.c | $(BUILDDIR) $(DEPDIR)
 	$(CC) $(CFLAGS) $(DEPFLAGS) -I$(INCLUDEDIR) -I$(LIBC_INCLUDEDIR) -c $< -o $@
 
+$(BUILDDIR)/%.o: arch/i686/%.c | $(BUILDDIR) $(DEPDIR)
+	$(CC) $(CFLAGS) $(DEPFLAGS) -I$(INCLUDEDIR) -I$(LIBC_INCLUDEDIR) -c $< -o $@
+
 $(BUILDDIR)/%.o: libc/src/%.c | $(BUILDDIR) $(DEPDIR)
 	$(CC) $(CFLAGS) $(DEPFLAGS) -I$(INCLUDEDIR) -I$(LIBC_INCLUDEDIR) -c $< -o $@
 
@@ -63,7 +67,7 @@ clean:
 	rm -rf $(BUILDDIR) nullos.iso
 
 test:
-	qemu-system-i386 -cdrom nullos.iso
+	qemu-system-i386 -drive format=raw,file=nullos.iso -vga std
 
 # Include automatically generated dependencies
 -include $(wildcard $(DEPDIR)/*.d)
