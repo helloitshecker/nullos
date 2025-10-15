@@ -80,3 +80,11 @@ void terminal_writestring(const char* str) {
         terminal_putchar(word_fg, word_bg, str[i]);
     }
 }
+
+void terminal_writestring_with_color(u32 fg, u32 bg, const char* str) {
+    const size len = strlen(str);
+
+    for (size i = 0; i < len; i++) {
+        terminal_putchar(fg, bg, str[i]);
+    }
+}

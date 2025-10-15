@@ -4,7 +4,7 @@ LD := i686-elf-ld
 OBJCOPY := i686-elf-objcopy
 
 ASFLAGS := -f elf32
-CFLAGS := -ffreestanding -fno-pic -m32 -Wall -Wextra -O2 -nostdlib -lgcc -std=c23
+CFLAGS := -ffreestanding -fno-pic -m32 -Wall -Wextra -nostdlib -lgcc -std=c23
 LDFLAGS := -m elf_i386 -T linker.ld
 
 INCLUDEDIR := include
@@ -67,7 +67,7 @@ clean:
 	rm -rf $(BUILDDIR) nullos.iso
 
 test:
-	qemu-system-i386 -drive format=raw,file=nullos.iso -vga std
+	qemu-system-i386 -drive format=raw,file=nullos.iso -vga qxl -m 2G
 
 # Include automatically generated dependencies
 -include $(wildcard $(DEPDIR)/*.d)

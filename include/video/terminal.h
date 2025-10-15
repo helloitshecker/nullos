@@ -12,4 +12,6 @@ void terminal_putchar(u32 fg, u32 bg, char ch);
 
 void terminal_writestring(const char* str);
 
+void terminal_writestring_with_color(u32 fg, u32 bg, const char* str);
+
 #endif

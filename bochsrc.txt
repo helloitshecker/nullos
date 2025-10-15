@@ -1,0 +1,26 @@
+# CPU
+megs: 256
+#romimage: file=/usr/share/bochs/BIOS-bochs-latest
+#vgaromimage: file=/usr/share/bochs/VGABIOS-lgpl-latest
+
+
+# Enable logging
+#log: bochslog.txt
+#error: bochserr.txt
+#info: bochsinfo.txt
+#debug: bochsdbg.txt
+
+# Boot
+boot: disk
+floppya: 1_44=nullos.iso, status=inserted
+
+# Graphics
+display_library: sdl2
+vga: extension=vbe
+
+# Options
+clock: sync=realtime
+
+# Optional: halt CPU on error
+panic: action=ask
+

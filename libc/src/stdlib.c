@@ -1,6 +1,13 @@
 #include <stdlib.h>
-#include <stdint.h>
 #include <stdbool.h>
+
+#define HEAP_SIZE 0x10000
+
+extern char kernel_end;
+
+static volatile u8* heap_start;
+static volatile u8* heap_end;
+static volatile u8* heap_current;
 
 int atoi(const char* str) {
     int n = 0, s = 1;
@@ -49,5 +56,24 @@ void itoa(int num, char* str) {
         str[end] = temp;
         start++;
         end--;
+    }
+}
+
+
+void __malloc_init__(void) {
+    const uintptr_t ptr = (uintptr_t)kernel_end;
+    heap_start = (u8*)ptr;
+    heap_end = heap_start + HEAP_SIZE;
+    heap_current = heap_start;
+}
+
+void* malloc(size size) {
+    if (heap_current + size > heap_end) {
+        // memory cant be allocated
+        return nullptr;
+    } else {
+        void* cur = (void*)heap_current;
+        heap_current += size;
+        return cur;
     }
 }
